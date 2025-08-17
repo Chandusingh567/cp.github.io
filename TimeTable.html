@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Full-Day Timetable</title>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --border: #2a3358;
+            --muted: #7780a1;
+            --text: #e8ecff;
+            --accent: #6ea8fe;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: center;
+        }
+
+        thead {
+            background: #10183a;
+            color: var(--muted);
+        }
+
+        .editable {
+            outline: none;
+        }
+
+            .editable:focus {
+                background: rgba(255,255,255,.05);
+            }
+
+        .controls {
+            margin: 16px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            background: #162048;
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+            .btn:hover {
+                background: #1e2b5c;
+            }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Full‑Day Timetable</h1>
+        <div class="controls">
+            <button class="btn" id="btnPrint">Print</button>
+            <button class="btn" id="btnCSV">Export CSV</button>
+            <button class="btn" id="btnAdd" style="background-color:green">Add Row</button>
+        </div>
+        <table id="timetable">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Duration</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="editable" contenteditable>09:00 AM</td>
+                    <td class="editable" contenteditable>10:00 AM</td>
+                    <td class="duration">1h 0m</td>
+                    <td class="editable" contenteditable>Example note</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const tableBody = document.querySelector('#timetable tbody');
+
+        // Function to parse time string like "09:00 AM"
+        function parseTime(str) {
+            const match = str.trim().match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+            if (!match) return null;
+            let h = parseInt(match[1], 10);
+            let m = parseInt(match[2], 10);
+            const ap = match[3] ? match[3].toUpperCase() : null;
+            if (ap) {
+                if (ap === "PM" && h < 12) h += 12;
+                if (ap === "AM" && h === 12) h = 0;
+            }
+            return h * 60 + m; // minutes from midnight
+        }
+
+        // Update durations
+        function updateDurations() {
+            tableBody.querySelectorAll('tr').forEach(tr => {
+                const from = parseTime(tr.children[0].innerText);
+                const to = parseTime(tr.children[1].innerText);
+                const durationCell = tr.querySelector('.duration');
+                if (from != null && to != null && durationCell) {
+                    let diff = to - from;
+                    if (diff < 0) diff += 24 * 60; // handle overnight
+                    const h = Math.floor(diff / 60);
+                    const m = diff % 60;
+                    durationCell.innerText = `${h}h ${m}m`;
+                } else if (durationCell) {
+                    durationCell.innerText = "-";
+                }
+            });
+        }
+
+        // Add new row
+        document.getElementById('btnAdd').addEventListener('click', () => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td class="editable" contenteditable>--:--</td>
+            <td class="editable" contenteditable>--:--</td>
+            <td class="duration">-</td>
+            <td class="editable" contenteditable></td>
+          `;
+            tableBody.appendChild(tr);
+        });
+
+        // Print button
+        document.getElementById('btnPrint').addEventListener('click', () => window.print());
+
+        // Export CSV button
+        document.getElementById('btnCSV').addEventListener('click', () => {
+            const rows = Array.from(document.querySelectorAll('#timetable tr'));
+            const csv = rows.map(row => Array.from(row.querySelectorAll('th, td')).map(cell => '"' + cell.innerText.replace(/"/g, '""') + '"').join(',')).join('\n');
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'timetable.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Watch for edits
+        document.addEventListener('input', e => {
+            if (e.target.classList.contains('editable')) updateDurations();
+        });
+
+        updateDurations();
+    </script>
+</body>
+</html>
