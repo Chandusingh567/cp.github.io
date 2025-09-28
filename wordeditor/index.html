@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Editor - Microsoft Word-like Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header/Toolbar -->
+        <header class="toolbar">
+            <div class="toolbar-left">
+                <div class="logo">
+                    <i class="fas fa-file-word"></i>
+                    <span>Word Editor</span>
+                </div>
+                <div class="file-menu">
+                    <button class="menu-btn" id="fileMenuBtn">
+                        <i class="fas fa-file"></i> File
+                    </button>
+                    <div class="dropdown-menu" id="fileMenu">
+                        <div class="menu-item" onclick="newDocument()">
+                            <i class="fas fa-plus"></i> New
+                        </div>
+                        <div class="menu-item" onclick="openFile()">
+                            <i class="fas fa-folder-open"></i> Open
+                        </div>
+                        <div class="menu-item" onclick="saveDocument()">
+                            <i class="fas fa-save"></i> Save
+                        </div>
+                        <div class="menu-item" onclick="saveAs()">
+                            <i class="fas fa-save"></i> Save As
+                        </div>
+                        <div class="menu-divider"></div>
+                        <div class="menu-item" onclick="printDocument()">
+                            <i class="fas fa-print"></i> Print
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-menu">
+                    <button class="menu-btn" id="editMenuBtn">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <div class="dropdown-menu" id="editMenu">
+                        <div class="menu-item" onclick="undo()">
+                            <i class="fas fa-undo"></i> Undo
+                        </div>
+                        <div class="menu-item" onclick="redo()">
+                            <i class="fas fa-redo"></i> Redo
+                        </div>
+                        <div class="menu-divider"></div>
+                        <div class="menu-item" onclick="cut()">
+                            <i class="fas fa-cut"></i> Cut
+                        </div>
+                        <div class="menu-item" onclick="copy()">
+                            <i class="fas fa-copy"></i> Copy
+                        </div>
+                        <div class="menu-item" onclick="paste()">
+                            <i class="fas fa-paste"></i> Paste
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <button class="tool-btn" id="saveBtn" title="Save">
+                    <i class="fas fa-save"></i>
+                </button>
+                <button class="tool-btn" id="printBtn" title="Print">
+                    <i class="fas fa-print"></i>
+                </button>
+                <button class="tool-btn" id="shareBtn" title="Share">
+                    <i class="fas fa-share"></i>
+                </button>
+            </div>
+
+
+            
+
+        </header>
+
+        <!-- Formatting Toolbar -->
+        <div class="formatting-toolbar">
+            <div class="format-group">
+                <select id="fontFamily" class="format-select">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Calibri">Calibri</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+                <select id="fontSize" class="format-select">
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12" selected>12</option>
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="18">18</option>
+                    <option value="20">20</option>
+                    <option value="24">24</option>
+                    <option value="28">28</option>
+                    <option value="32">32</option>
+                    <option value="36">36</option>
+                    <option value="48">48</option>
+                    <option value="72">72</option>
+                </select>
+            </div>
+
+            <div class="format-group">
+                <button class="format-btn" id="boldBtn" title="Bold">
+                    <i class="fas fa-bold"></i>
+                </button>
+                <button class="format-btn" id="italicBtn" title="Italic">
+                    <i class="fas fa-italic"></i>
+                </button>
+                <button class="format-btn" id="underlineBtn" title="Underline">
+                    <i class="fas fa-underline"></i>
+                </button>
+                <button class="format-btn" id="strikethroughBtn" title="Strikethrough">
+                    <i class="fas fa-strikethrough"></i>
+                </button>
+            </div>
+
+            <div class="format-group">
+                <button class="format-btn" id="alignLeftBtn" title="Align Left">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="format-btn" id="alignCenterBtn" title="Align Center">
+                    <i class="fas fa-align-center"></i>
+                </button>
+                <button class="format-btn" id="alignRightBtn" title="Align Right">
+                    <i class="fas fa-align-right"></i>
+                </button>
+                <button class="format-btn" id="justifyBtn" title="Justify">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+            </div>
+
+            <div class="format-group">
+                <button class="format-btn" id="bulletListBtn" title="Bullet List">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="format-btn" id="numberListBtn" title="Numbered List">
+                    <i class="fas fa-list-ol"></i>
+                </button>
+                <button class="format-btn" id="decreaseIndentBtn" title="Decrease Indent">
+                    <i class="fas fa-outdent"></i>
+                </button>
+                <button class="format-btn" id="increaseIndentBtn" title="Increase Indent">
+                    <i class="fas fa-indent"></i>
+                </button>
+            </div>
+
+
+            <!-- Add somewhere in the formatting-toolbar -->
+            <button id="insertImageBtn" class="format-btn" title="Insert Image">
+                <i class="fa fa-image"></i>
+            </button>
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;" />
+
+            <button id="createTableBtn">📊 Table</button>
+
+
+            <div class="format-group">
+                <button class="format-btn" id="insertLinkBtn" title="Insert Link">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div>
+
+            <div class="format-group">
+                <button class="format-btn" id="insertYoutubeBtn" title="Insert YouTube Video">
+                    <i class="fab fa-youtube"></i>
+                </button>
+            </div>
+
+            <div class="format-group">
+                <button class="format-btn" id="toggleSourceBtn" title="View Source">
+                    <i class="fas fa-code"></i>
+                </button>
+            </div>
+
+
+            <div class="format-group">
+                <input type="color" id="textColor" class="color-picker" title="Text Color">
+                <input type="color" id="highlightColor" class="color-picker" title="Highlight Color">
+                <button class="format-btn" id="clearFormatBtn" title="Clear Formatting">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="document-container">
+                <div class="document-paper">
+                    <div class="document-header">
+                        <div class="page-info">
+                            <span id="pageNumber">Page 1</span>
+                            <span id="wordCount">0 words</span>
+                        </div>
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" id="zoomOutBtn" title="Zoom Out">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <span id="zoomLevel">100%</span>
+                            <button class="zoom-btn" id="zoomInBtn" title="Zoom In">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <div id="editor" class="editor" contenteditable="true" spellcheck="true">
+                            <p>Welcome to Word Editor!</p>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-left">
+                <span id="cursorPosition">Ln 1, Col 1</span>
+                <span id="selectionInfo"></span>
+            </div>
+            <div class="status-right">
+                <span id="documentStats">Ready</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Save Document</h3>
+                <button class="close-btn" onclick="closeModal('saveModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="fileName">File Name:</label>
+                    <input type="text" id="fileName" value="document.docx" placeholder="Enter file name">
+                </div>
+                <div class="form-group">
+                    <label for="fileFormat">Format:</label>
+                    <select id="fileFormat">
+                        <option value="docx">Word Document (.docx)</option>
+                        <option value="txt">Plain Text (.txt)</option>
+                        <option value="html">HTML (.html)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('saveModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmSave()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="openModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Open Document</h3>
+                <button class="close-btn" onclick="closeModal('openModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="fileInput">Choose File:</label>
+                    <input type="file" id="fileInput" accept=".txt,.html,.docx">
+                </div>
+                <div class="recent-files">
+                    <h4>Recent Files</h4>
+                    <div id="recentFilesList">
+                        <div class="recent-file">No recent files</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('openModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmOpen()">Open</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
