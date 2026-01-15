@@ -1,0 +1,283 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CoreFlow</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+DBHELPER CLASS======================================================================================================================
+
+using System.Data;
+using System.Data.SqlClient;
+
+
+
+namespace Kashiarchan.Models
+{
+
+    public class dbhelper
+    {
+
+        private readonly IConfiguration _configuration;
+        string consString = null;
+        SqlConnection con = null;
+
+
+
+
+        public dbhelper()
+        {
+            var configuation = GetConfiguration();
+            con = new SqlConnection(configuation.GetSection("ConnectionStrings").GetSection("ConnectionStrings").Value);
+            consString = configuation.GetSection("ConnectionStrings").GetSection("ConnectionStrings").Value;
+        }
+
+        public IConfigurationRoot GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            return builder.Build();
+        }
+
+
+
+
+
+
+        public int ExecuteNonQueryProc(string cmdText, SqlParameter[] prms)
+        {
+            int r = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(consString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(cmdText, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Clear();
+                        if (prms != null)
+                        {
+                            foreach (SqlParameter p in prms)
+                            {
+                                cmd.Parameters.Add(p);
+                            }
+                        }
+                        conn.Open();
+                        try
+                        {
+                            r = cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            r = 0;
+                        }
+                        finally
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return r;
+        }
+
+
+
+
+
+
+        public DataTable ExecProcDataTable(string ProName, SqlParameter[] Param)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlCommand cmd = new SqlCommand(ProName, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                if (Param != null)
+                {
+                    foreach (SqlParameter prm in Param)
+                    {
+                        cmd.Parameters.Add(prm);
+                    }
+                }
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+
+
+                adp.Fill(dt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
+
+
+
+        public DataSet ExecProcDataSet(string ProName, SqlParameter[] Param)
+        {
+            DataSet dt = new DataSet();
+            try
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(ProName, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                foreach (SqlParameter prm in Param)
+                {
+                    cmd.Parameters.Add(prm);
+                }
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(dt);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+            return dt;
+        }
+
+
+
+
+
+
+        public int ExecuteNonQuery(string Query)
+        {
+            int r = 0;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(consString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(Query, conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        conn.Open();
+                        try
+                        {
+                            r = cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            r = 0;
+                        }
+                        finally
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return r;
+        }
+
+
+    }
+}
+
+
+
+
+Logic class ====================================================================================================================================
+
+
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System.Data.SqlClient;
+using System.Data;
+using System.Reflection;
+using Microsoft.CodeAnalysis.CodeActions;
+using Newtonsoft.Json;
+using static Kashiarchan.Models.BindMaster;
+using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
+using Razorpay.Api;
+
+namespace Kashiarchan.Models
+{
+    public class LogicClass
+    {
+        dbhelper objdb = new dbhelper();
+
+        public DataTable getLoginDetails(Login Objp, string ProcName)
+        {
+            DataTable dtt = new DataTable();
+            SqlParameter[] param = new SqlParameter[]
+            {
+                new SqlParameter("@UserId",Objp.UserId),
+                new SqlParameter("@Password",Objp.Password),
+                new SqlParameter("@Action",Objp.Action)
+            };
+            dtt = objdb.ExecProcDataTable(ProcName, param);
+            return dtt;
+        }
+    }
+}
+
+
+
+
+Cantroller===================================================================================================================================
+
+using System.Data;
+using Kashiarchan.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Kashiarchan.Controllers
+{
+   
+    public class AccountController : Controller
+    {
+
+        private readonly IWebHostEnvironment hostingEnv;
+        private readonly Commonclass Commoncls;
+       
+        public AccountController(IWebHostEnvironment hostingEnv, Commonclass commoncls)
+        {
+            this.hostingEnv = hostingEnv;
+            Commoncls = commoncls;
+           
+        }
+
+        LogicClass objL = new LogicClass();
+
+        public IActionResult ReviewRating(ReviewRatingModel2 Model)
+        {
+            Model.Action = 2;
+            Model.dt = objL.ReviewRating(Model);
+
+            return View(Model);
+        }
+
+    }
+}
+
+
+App Setting===============================================================================================================
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "ConnectionStrings": "Data Source=103.171.97.51,5022;Initial Catalog=yatritravelsdb;User Id=localuser;Password=SigmaIT@54653Software$$"
+  }
+}
+
+</textarea>
+
+</body>
+</html>

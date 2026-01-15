@@ -1,0 +1,119 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SaveByJquery</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+Save jquery 1 ======================================================================================================================
+
+
+function save() {
+    var Id = $('#Id').val();
+    var Name = $('#Name').val();
+    var Mobile = $('#Mobile').val();
+    var Gender = $("input[name='gender']:checked").val();
+    var Dob = $('#DOB').val();
+    var About = $('#About').val();
+
+    if (!Name || !Mobile || !Gender || !Dob)
+    {
+        alert("Please fill out all required fields.");
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append("Id", Id);
+    formData.append("Name", Name);
+    formData.append("Number", Mobile);
+    formData.append("Gender", Gender);
+    formData.append("Dob", Dob);
+    formData.append("About", About);
+
+    $.ajax({
+        url: '/Home/InsertUpdateBasicCrudByJqery',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            if (data == "1") {
+                alert('Added Successfully.');
+                location.href = '/Home/BasicCrudByJqery';
+            } else if (data == '2') {
+                alert('Updated Successfully.');
+                location.href = '/Home/BasicCrudByJqery';
+            } else {
+                alert("Something Went Wrong!");
+            }
+        },
+        error: function () {
+            alert("Error occurred while saving data.");
+        }
+    });
+}
+
+
+Save jquery 2 =======================================================================================
+
+function Save() {
+
+	var data = new FormData;
+
+	data.append("Id", $('#Id').val());
+	data.append("BannerName", $('#BannerName').val());
+	data.append("Files", $('#File')[0].files[0]);
+	data.append("AssignType", $('#AssignType').val());
+	data.append("AssignName", $('#AssignName option:selected').text());
+	data.append("BannerUrl", $('#AssignName').val());
+
+	$.ajax({
+		url: '/Admin/SaveAppBannerMaster',
+		method: 'POST',
+		processData: false,
+		contentType: false,
+		data: data,
+		success: function (r) {
+			if (r == '1')
+			{
+				alert('Save Successfully..');
+				window.location.reload();
+			}
+			else if (r == '2') {
+				alert('Update Successfully..');
+				window.location.reload();
+			}
+			else {
+				Swal.fire("Something Went Wrong!!");
+			}
+		}
+	});
+}
+
+
+Delete===================================================================================================
+
+function DeleteAddGod(Id) {
+	var check = confirm('Are You Sure');
+	if (check == true) {
+		$.ajax({
+			url: "/Admin/DeleteAddGod",
+			type: "GET",
+			data: { Id: Id },
+			dataType: "json",
+			success: function (r) {
+				if (r == 'delete') {
+					alert('God Delete Successfully..');
+					location.href = '/Admin/AddGod';
+				}
+			},
+			error: function (er) {
+				alert("Server Not Responding!");
+			}
+		});
+	}
+};
+
+</textarea>
+
+</body>
+</html>

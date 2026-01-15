@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CoreFlow</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+Page======================================================================================================================
+
+
+
+<select id="ReportingManager" class="form-control">
+
+json Page ====================================================================================================================================
+
+function ReportingManager() {
+    var DesignationId = $('#DesignationId').val();
+
+    var formData = new FormData();
+    formData.append("DesignationId", DesignationId);
+
+    $.ajax({
+        url: '/Master/GetrepotingManager',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            var $dropdown = $('#ReportingManager');
+            $dropdown.empty();
+
+            $.each(data, function (index, item) {
+                $dropdown.append($('<option>', {
+                    value: item.EmployeeID,
+                    text: item.name
+                }));
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching reporting managers:", error);
+        }
+    });
+}
+
+Cantroller===================================================================================================================================
+
+public JsonResult GetrepotingManager(Designation Model)
+{
+
+    Model.Action = "5";
+
+    Model.dt = lg.Designation(Model, "Proc_DesignationMaster");
+
+    var data = Model.dt.AsEnumerable().Select(row => Model.dt.Columns.Cast<DataColumn>()
+                          .ToDictionary(col => col.ColumnName, col => row[col])).ToList();
+
+    return Json(data, JsonRequestBehavior.AllowGet);
+}
+
+
+
+
+</textarea>
+
+</body>
+</html>
