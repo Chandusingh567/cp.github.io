@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CoreFlow - Searchable Links</title>
+    <meta charset="UTF-8" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            padding: 30px;
+        }
+
+        #searchBox {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 6px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        .no-results {
+            display: none;
+            color: #888;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🔗 All Links</h2>
+
+    <input type="text" id="searchBox" placeholder="Search links..." />
+
+    <ul id="linkList">
+        <li><a href="CoreFlow.html" target="_blank">Core Flow</a></li>
+        <li><a href="MVCFlow.html" target="_blank">MVC Flow</a></li>
+        <li><a href="Dropdown.html" target="_blank">DropDown</a></li>
+        <li><a href="OnChangeDropDown.html" target="_blank">On Change DropDown</a></li>
+        <li><a href="SaveAndDeleteByJquery.html" target="_blank">Save And Delete By Jquery</a></li>
+        <li><a href="MobileValidation.html" target="_blank">Mobile Validation</a></li>
+        <li><a href="CantrollerValidation.html" target="_blank">Cantroller Validation</a></li>
+    </ul>
+
+    <div class="no-results">No matching links found.</div>
+
+    <script>
+        $(document).ready(function () {
+            $("#searchBox").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                var matchCount = 0;
+                $("#linkList li").filter(function () {
+                    var match = $(this).text().toLowerCase().indexOf(value) > -1;
+                    $(this).toggle(match);
+                    if (match) matchCount++;
+                });
+                $(".no-results").toggle(matchCount === 0);
+            });
+        });
+    </script>
+
+</body>
+</html>
