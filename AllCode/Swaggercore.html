@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Swagger</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+
+Swagger Nuget     ======================================================================================================================
+
+Swashbuckle.AspNetCore
+
+
+Program cs       =======================================================================================
+
+
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+
+
+if (app.Environment.IsDevelopment())
+{
+    // 👉 Enable Swagger only in Development
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+
+
+
+Open               ===================================================================================================
+
+/swagger/index.html
+
+
+</textarea>
+
+</body>
+</html>

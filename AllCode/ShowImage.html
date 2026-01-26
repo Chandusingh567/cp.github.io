@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Image Show</title>
+</head>
+<body>
+
+<textarea style="width:100%;height:100%">
+
+Show Code ======================================================================================================================
+
+
+    
+    <input type="file" id="Image" accept="image/*">
+    <br><br>
+
+    <img src="" alt="Image Preview" id="showimage" style="display:none; width:150px; height:auto; border:1px solid #ccc; padding:5px;">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+    <script>
+        $("#Image").change(function () {
+            var file = this.files[0];
+
+            if (file) 
+            {
+                var reader = new FileReader();
+
+                reader.onload = function (e) 
+                {
+                    $("#showimage").attr("src", e.target.result); 
+                    $("#showimage").show(); 
+                }
+
+                reader.readAsDataURL(file);
+            } 
+            else 
+            {
+                $("#showimage").hide(); 
+            }
+        });
+    </script>
+</textarea>
+</body>
+</html>
