@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title> Image Uplode</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+
+Jquery    ============================================================================================================
+
+
+
+
+function uploadImage()
+{
+
+    var fileInput = $("#image")[0];
+
+    var formData = new FormData();
+    if (fileInput.files.length > 0) {
+        formData.append("GetImage", fileInput.files[0]);
+
+        $.ajax({
+            url: "/Home/UploadImage",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                alert("File uploaded: " + response); // Show the file name
+            },
+            error: function (error) {
+                alert("Error: " + error.responseText);
+            }
+        });
+    }
+    else {
+        alert("Please select a file to upload.");
+    }
+}
+
+
+
+
+
+Cantroller Core       =======================================================================================
+
+
+
+public IFormFile GetImage { get; set; }  =========== Model
+
+
+
+
+
+private readonly IWebHostEnvironment _webHostEnvironment;
+
+public HomeController(IWebHostEnvironment webHostEnvironment)
+{
+    _webHostEnvironment = webHostEnvironment;
+}
+
+
+
+
+
+
+
+public async Task<JsonResult> UploadImage(Imageuplode model)
+{
+    string msg = "";
+
+    if (model.GetImage != null && model.GetImage.Length > 0)
+    {
+        try
+        {
+            string fileName = Path.GetFileName(model.GetImage.FileName);
+            string fileExtension = Path.GetExtension(fileName);
+            string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+
+            string folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "Files");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            string filePath = Path.Combine(folderPath, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.GetImage.CopyToAsync(fileStream);
+            }
+
+            msg = uniqueFileName;
+        }
+        catch (Exception ex)
+        {
+            msg = "Error: " + ex.Message;
+        }
+    }
+    else
+    {
+        msg = "No image selected or the file is empty.";
+    }
+
+    return Json(msg);
+}
+
+
+Cantroller Mvc       =======================================================================================
+
+
+
+public HttpPostedFileBase GetImage { get; set; }
+
+
+
+
+Public JsonResult UploadImage(Imageuplode model)
+{
+    string msg = "";
+
+    if (model.GetImage != null && model.GetImage.ContentLength > 0)
+    {
+        try
+        {
+            string fileName = Path.GetFileName(model.GetImage.FileName);
+            string fileExtension = Path.GetExtension(fileName);
+            string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+
+            string folderPath = Server.MapPath("~/Files");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            string filePath = Path.Combine(folderPath, uniqueFileName);
+
+            model.GetImage.SaveAs(filePath);
+
+            return Json(new
+            {
+                success = true,
+                fileName = uniqueFileName,
+                filePath = "/Files/" + uniqueFileName
+            });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    else
+    {
+        return Json(new { success = false, message = "No image selected." });
+    }
+}
+
+
+
+
+</textarea>
+
+</body>
+</html>

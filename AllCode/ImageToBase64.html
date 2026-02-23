@@ -1,0 +1,140 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Image To Base64</title>
+</head>
+<body>
+    <textarea style="width:100%;height:100%">
+
+Jquery    ============================================================================================================
+
+
+
+function uploadImage() {
+    debugger
+
+    var fileInput = $("#image")[0];
+
+    var formData = new FormData();
+    if (fileInput.files.length > 0) {
+        formData.append("GetImage", fileInput.files[0]);
+
+        $.ajax({
+            url: "/Home/UploadImage",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                alert("File uploaded: " + response); // Show the file name
+            },
+            error: function (error) {
+                alert("Error: " + error.responseText);
+            }
+        });
+    }
+    else {
+        alert("Please select a file to upload.");
+    }
+}
+
+
+Core Cantroller       =======================================================================================
+
+
+
+public IFormFile GetImage { get; set; }  =========== Model
+
+
+
+
+public async Task<JsonResult> UploadImageBase(Imageuplode model)
+{
+    string msg = "";
+
+    if (model.GetImage != null && model.GetImage.Length > 0)
+    {
+        try
+        {
+            byte[] imageBytes = null;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await model.GetImage.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
+            string base64Image = Convert.ToBase64String(imageBytes);
+
+            msg = base64Image;
+        }
+        catch (Exception ex)
+        {
+            msg = "Error: " + ex.Message;
+        }
+    }
+    else
+    {
+        msg = "No image selected or the file is empty.";
+    }
+
+    return Json(msg);
+}
+
+
+
+
+
+MVC Cantroller       =======================================================================================
+
+
+public HttpPostedFileBase GetImage { get; set; }
+
+
+public JsonResult UploadImageBase(Imageuplode model)
+    {
+        if (model.GetImage != null && model.GetImage.ContentLength > 0)
+        {
+            try
+            {
+                byte[] imageBytes;
+
+                using (var binaryReader = new BinaryReader(model.GetImage.InputStream))
+                {
+                    imageBytes = binaryReader.ReadBytes(model.GetImage.ContentLength);
+                }
+
+                string base64Image = Convert.ToBase64String(imageBytes);
+
+                return Json(new
+                {
+                    success = true,
+                    base64 = base64Image
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+        else
+        {
+            return Json(new
+            {
+                success = false,
+                message = "No image selected."
+            });
+        }
+    }
+
+
+
+
+
+</textarea>
+
+</body>
+</html>
