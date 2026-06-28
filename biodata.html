@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marriage Biodata - Chandra Prakash</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #010409;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .bio-root {
+    width: 100%;
+    max-width: 860px;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  }
+
+  /* ── TOP BAR ── */
+  .bio-topbar {
+    background: #161b22;
+    padding: 11px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .bio-topbar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #8b949e;
+    margin-left: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── HERO ── */
+  .bio-hero {
+    background: #161b22;
+    padding: 32px 32px 28px;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .bio-avatar {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .bio-avatar-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #238636;
+    background: #1c2128;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    font-weight: 600;
+    color: #58a6ff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  .bio-avatar-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: none; /* show when photo is available */
+  }
+
+  .bio-avatar-badge {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 22px;
+    height: 22px;
+    background: #238636;
+    border: 2.5px solid #161b22;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bio-avatar-badge svg { width: 11px; height: 11px; }
+
+  .bio-hero-info { flex: 1; min-width: 0; }
+
+  .bio-name {
+    font-size: 26px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin: 0 0 4px;
+    letter-spacing: -0.4px;
+  }
+
+  .bio-handle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #8b949e;
+    margin: 0 0 14px;
+  }
+
+  .bio-handle span { color: #58a6ff; }
+
+  .bio-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 18px;
+  }
+
+  .bio-tag {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 3px 11px;
+    border-radius: 20px;
+    border: 1px solid;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  .tag-green  { background: #0d2119; color: #3fb950; border-color: #238636; }
+  .tag-blue   { background: #051d4d; color: #58a6ff; border-color: #1f6feb; }
+  .tag-purple { background: #1d1160; color: #bc8cff; border-color: #6e40c9; }
+  .tag-orange { background: #2d1c00; color: #e3b341; border-color: #9e6a03; }
+
+  .bio-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .bio-stat { text-align: center; }
+
+  .bio-stat-val {
+    font-size: 20px;
+    font-weight: 600;
+    color: #58a6ff;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+
+  .bio-stat-lbl {
+    font-size: 10px;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 4px;
+  }
+
+  /* ── BODY GRID ── */
+  .bio-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bio-col {
+    padding: 24px 26px;
+    border-right: 1px solid #21262d;
+  }
+
+  .bio-col:last-child { border-right: none; }
+
+  .bio-section { margin-bottom: 24px; }
+  .bio-section:last-child { margin-bottom: 0; }
+
+  .bio-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #3fb950;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bio-section-label::before {
+    content: '//';
+    color: #6e7681;
+  }
+
+  .bio-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid #21262d;
+    gap: 8px;
+  }
+
+  .bio-row:last-child { border-bottom: none; }
+
+  .bio-row-key {
+    color: #8b949e;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .bio-row-val {
+    color: #e6edf3;
+    text-align: right;
+    font-size: 12.5px;
+  }
+
+  .bio-row-val.accent { color: #58a6ff; }
+  .bio-row-val.green  { color: #3fb950; }
+  .bio-row-val.amber  { color: #e3b341; }
+
+  /* Education */
+  .bio-edu-item {
+    padding: 7px 0;
+    border-bottom: 1px solid #21262d;
+  }
+
+  .bio-edu-item:last-child { border-bottom: none; }
+
+  .bio-edu-level {
+    color: #8b949e;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .bio-edu-name {
+    color: #e6edf3;
+    font-size: 12.5px;
+  }
+
+  /* Hobbies */
+  .bio-hobbies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .bio-hobby {
+    font-size: 11.5px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 5px 12px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #c9d1d9;
+  }
+
+  /* ── FOOTER ── */
+  .bio-footer {
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    padding: 14px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .bio-footer-contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: #8b949e;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .bio-footer-contact a {
+    color: #58a6ff;
+    text-decoration: none;
+  }
+
+  .bio-footer-contact a:hover { text-decoration: underline; }
+
+  .bio-commit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #6e7681;
+    white-space: nowrap;
+  }
+
+  .bio-commit b { color: #3fb950; }
+
+  /* ── RESPONSIVE ── */
+
+  /* Tablet (max 768px) */
+  @media (max-width: 768px) {
+    body { padding: 20px 12px; }
+
+    .bio-topbar-title { font-size: 10px; }
+
+    .bio-hero { padding: 24px 20px 20px; gap: 20px; }
+
+    .bio-name { font-size: 22px; }
+
+    .bio-stats { gap: 16px; }
+    .bio-stat-val { font-size: 17px; }
+
+    .bio-col { padding: 20px; }
+  }
+
+  /* Mobile (max 560px) */
+  @media (max-width: 560px) {
+    body { padding: 0; background: #0d1117; }
+
+    .bio-root { border-radius: 0; border-left: none; border-right: none; }
+
+    /* Topbar: hide long title, show short version */
+    .bio-topbar { padding: 10px 14px; }
+    .bio-topbar-title { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: calc(100% - 60px); }
+
+    /* Hero: stack avatar + info vertically */
+    .bio-hero {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 16px 20px;
+      gap: 14px;
+    }
+
+    .bio-avatar-img { width: 88px; height: 88px; font-size: 32px; }
+
+    .bio-name { font-size: 22px; }
+
+    .bio-handle { font-size: 11px; margin-bottom: 12px; }
+
+    .bio-tags { justify-content: center; gap: 6px; }
+    .bio-tag { font-size: 10px; padding: 3px 9px; }
+
+    .bio-stats {
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bio-stat {
+      flex: 1;
+      padding: 10px 6px;
+      border-right: 1px solid #21262d;
+    }
+
+    .bio-stat:last-child { border-right: none; }
+    .bio-stat-val { font-size: 16px; }
+    .bio-stat-lbl { font-size: 9px; }
+
+    /* Body: single column */
+    .bio-body { grid-template-columns: 1fr; }
+
+    .bio-col {
+      border-right: none;
+      border-bottom: 1px solid #21262d;
+      padding: 18px 16px;
+    }
+
+    .bio-col:last-child { border-bottom: none; }
+
+    /* Section labels */
+    .bio-section-label { font-size: 9px; letter-spacing: 1px; margin-bottom: 8px; }
+
+    /* Rows */
+    .bio-row { padding: 5px 0; }
+    .bio-row-key { font-size: 10px; }
+    .bio-row-val { font-size: 12px; }
+
+    /* Education */
+    .bio-edu-level { font-size: 9px; }
+    .bio-edu-name { font-size: 12px; }
+
+    /* Hobbies */
+    .bio-hobbies { gap: 6px; }
+    .bio-hobby { font-size: 11px; padding: 4px 10px; }
+
+    /* Footer */
+    .bio-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 12px 16px;
+    }
+
+    .bio-footer-contact { font-size: 11px; flex-direction: column; gap: 4px; }
+    .bio-commit { font-size: 10px; }
+  }
+
+  /* Very small phones (max 380px) */
+  @media (max-width: 380px) {
+    .bio-name { font-size: 19px; }
+    .bio-handle { font-size: 10px; }
+    .bio-stat-val { font-size: 14px; }
+    .bio-tag { font-size: 9px; padding: 2px 8px; }
+    .bio-row-key { font-size: 9px; }
+    .bio-row-val { font-size: 11px; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .bio-root { border-radius: 0; box-shadow: none; border: none; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bio-root">
+
+  <!-- TOP BAR -->
+  <div class="bio-topbar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <span class="bio-topbar-title">Biodata / chandra-prakash — Software Developer</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="bio-hero">
+    <div class="bio-avatar">
+      <div class="bio-avatar-img">
+        <!-- Replace src below with your photo path to show image -->
+        <img src="photo.jpg" alt="Chandra Prakash">
+        CP
+      </div>
+      <div class="bio-avatar-badge">
+        <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 5l2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="bio-hero-info">
+      <h1 class="bio-name">Chandra Prakash</h1>
+      <p class="bio-handle"><span>Software Developer at Sigma IT Solution</span></p>
+      <div class="bio-tags">
+        <span class="bio-tag tag-blue">B+ Blood Group</span>
+        <span class="bio-tag tag-purple">Tula · Libra</span>
+        <span class="bio-tag tag-orange">Hindu · Kharwar</span>
+      </div>
+      <div class="bio-stats">
+        <div class="bio-stat">
+          <div class="bio-stat-val">27</div>
+          <div class="bio-stat-lbl">Age</div>
+        </div>
+        <div class="bio-stat">
+          <div class="bio-stat-val">5'9"</div>
+          <div class="bio-stat-lbl">Height</div>
+        </div>
+       
+        <div class="bio-stat">
+          <div class="bio-stat-val">Lucknow</div>
+          <div class="bio-stat-lbl">Location</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="bio-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="bio-col">
+
+      <div class="bio-section">
+        <div class="bio-section-label">Personal</div>
+        <div class="bio-row">
+          <span class="bio-row-key">Dob</span>
+          <span class="bio-row-val">03 May 1999</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Religion</span>
+          <span class="bio-row-val">Hindu</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Caste</span>
+          <span class="bio-row-val">Kharwar</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Rashi</span>
+          <span class="bio-row-val accent">Tula · Libra</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Blood Group</span>
+          <span class="bio-row-val amber">B Positive (B+)</span>
+        </div>
+        
+      </div>
+
+      <div class="bio-section">
+        <div class="bio-section-label">Education</div>
+        <div class="bio-edu-item">
+          <div class="bio-edu-level">10th · High School</div>
+          <div class="bio-edu-name">CBSE Board</div>
+        </div>
+        <div class="bio-edu-item">
+          <div class="bio-edu-level">12th · Intermediate</div>
+          <div class="bio-edu-name">UP Board</div>
+        </div>
+        <div class="bio-edu-item">
+          <div class="bio-edu-level">Diploma</div>
+          <div class="bio-edu-name">Govt. Polytechnic, Lalitpur</div>
+        </div>
+      </div>
+
+      <div class="bio-section">
+        <div class="bio-section-label">Occupation</div>
+        <div class="bio-row">
+          <span class="bio-row-key">Role</span>
+          <span class="bio-row-val accent">Senior Software Developer</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Current Company</span>
+          <span class="bio-row-val">Sigma IT Solution Pvt. Ltd.</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Job Location</span>
+          <span class="bio-row-val">Lucknow, UP</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="bio-col">
+
+      <div class="bio-section">
+        <div class="bio-section-label">Family</div>
+        <div class="bio-row">
+          <span class="bio-row-key">Father</span>
+          <span class="bio-row-val">Rajendra Prasad</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Mother</span>
+          <span class="bio-row-val">Sunaina Devi</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Brother</span>
+          <span class="bio-row-val">Satya Prakash</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Sisters</span>
+          <span class="bio-row-val">Sunita, Punita, Vinita, Sujita</span>
+        </div>
+      </div>
+
+      <div class="bio-section">
+        <div class="bio-section-label">Address</div>
+        <div class="bio-row">
+          <span class="bio-row-key">Village</span>
+          <span class="bio-row-val">Dewal</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">District</span>
+          <span class="bio-row-val">Ghazipur</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">State</span>
+          <span class="bio-row-val">Uttar Pradesh</span>
+        </div>
+        <div class="bio-row">
+          <span class="bio-row-key">Pin Code</span>
+          <span class="bio-row-val accent">232333</span>
+        </div>
+      </div>
+
+      <div class="bio-section">
+        <div class="bio-section-label">Interests</div>
+        <div class="bio-hobbies">
+          <span class="bio-hobby">🌍 Travelling</span>
+          <span class="bio-hobby">⚽ Football</span>
+          <span class="bio-hobby">🏸 Badminton</span>
+          <span class="bio-hobby">🍽️Cooking</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end .bio-body -->
+
+  <!-- FOOTER -->
+  <div class="bio-footer">
+    <div class="bio-footer-contact">
+      <span>📞 <a href="tel:+919616590886">+91 9616590886</a></span>
+      <span>✉️ <a href="mailto:chandusingh567@gmail.com">chandusingh567@gmail.com</a></span>
+    </div>
+    <div class="bio-commit">
+      <b>● live</b> &nbsp; · 2026
+    </div>
+  </div>
+
+</div><!-- end .bio-root -->
+
+</body>
+</html>
